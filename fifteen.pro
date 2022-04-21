@@ -6,7 +6,8 @@ QT += quick
 
 SOURCES += \
         board.cpp \
-        main.cpp
+        main.cpp \
+        tile.cpp
 
 RESOURCES += qml.qrc
 
@@ -22,4 +23,5 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 HEADERS += \
-    board.h
+    board.h \
+    tile.h
