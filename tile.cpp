@@ -5,7 +5,7 @@ Tile::Tile(unsigned int number)
 {
 }
 
-QString Tile::data() const
+unsigned int Tile::data() const
 {
-    return QString::number(m_number);
+    return m_number;
 }

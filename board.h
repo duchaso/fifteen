@@ -23,6 +23,10 @@ public:
     int columnCount(const QModelIndex & = QModelIndex()) const override;
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
+    Qt::ItemFlags flags(const QModelIndex& index) const override;
+
+    Q_INVOKABLE void testFunction(const QModelIndex& index);
+    Q_INVOKABLE void testFunction(QString& str);
 private:
     TileMatrix m_data;
 };

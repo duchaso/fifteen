@@ -9,7 +9,7 @@ public:
     Tile() = delete;
     Tile(unsigned int number);
 
-    QString data() const;
+    unsigned int data() const;
 private:
     unsigned int m_number;
 };

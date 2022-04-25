@@ -18,13 +18,21 @@ Window {
         rowHeightProvider: function (row) { return win.height / 4 }
         interactive: false
 
-        model: Board {}
+        model: Board {
+            id: b
+        }
 
         delegate: Rectangle {
-            color: "blue"
+            id: r
+            color: bg
 
             Text {
                 text: display
+                anchors.centerIn: parent
+            }
+            MouseArea {
+                anchors.fill: parent
+                onClicked: {b.testFunction("Danyl")}
             }
         }
     }
