@@ -4,12 +4,20 @@
 #include <qqml.h>
 #include <QAbstractTableModel>
 
+#include <QBrush>
+#include <QColor>
+#include <QDebug>
+#include <utility>
+
 #include "tile.h"
 
 #define BOARD_HEIGHT 4
 #define BOARD_WIDTH  4
+#define FIRST 		 0
+#define SECOND 		 1
 
 using TileMatrix = QVector<QVector<Tile>>;
+using Coord = QPair<int, int>;
 
 class Board : public QAbstractTableModel
 {
@@ -25,10 +33,12 @@ public:
     QHash<int, QByteArray> roleNames() const override;
     Qt::ItemFlags flags(const QModelIndex& index) const override;
 
-    Q_INVOKABLE void testFunction(const QModelIndex& index);
-    Q_INVOKABLE void testFunction(QString& str);
+    Q_INVOKABLE void add_item_to_swapping(const int row, const int column);
+    bool swapping();
+
 private:
     TileMatrix m_data;
+    QVector<Coord> items_to_swap;
 };
 
 #endif // BOARD_H

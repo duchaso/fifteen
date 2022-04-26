@@ -19,11 +19,10 @@ Window {
         interactive: false
 
         model: Board {
-            id: b
+            id: boardModel
         }
 
         delegate: Rectangle {
-            id: r
             color: bg
 
             Text {
@@ -32,7 +31,7 @@ Window {
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: {b.testFunction("Danyl")}
+                onClicked: {boardModel.add_item_to_swapping(row, column)}
             }
         }
     }

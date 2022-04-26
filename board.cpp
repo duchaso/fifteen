@@ -1,8 +1,5 @@
 #include "board.h"
 
-#include <QBrush>
-#include <QColor>
-#include <QDebug>
 
 Board::Board()
 {
@@ -17,8 +14,6 @@ Board::Board()
         }
         m_data.append(tmp);
     }
-
-    return;
 }
 
 int Board::rowCount(const QModelIndex &) const
@@ -65,13 +60,34 @@ Qt::ItemFlags Board::flags(const QModelIndex &index) const
         return Qt::ItemIsDropEnabled;
 }
 
-void Board::testFunction(const QModelIndex& index)
-{
-    qDebug() << index.data().toString();
+void Board::add_item_to_swapping(const int row, const int col) {
+    items_to_swap.append(Coord(row, col));
+    if(items_to_swap.length() == 2)
+    {
+        swapping();
+        items_to_swap.clear();
+    }
 }
 
-void Board::testFunction(QString &str)
+bool Board::swapping()
 {
-    qDebug() << str;
+    if(items_to_swap[FIRST] == items_to_swap[SECOND])
+    {
+        qDebug() << "Can't move. Items are the same.";
+        return false;
+    } else {
+        auto f_row = items_to_swap[FIRST].first;
+        auto f_col = items_to_swap[FIRST].second;
+
+        auto s_row = items_to_swap[SECOND].first;
+        auto s_col = items_to_swap[SECOND].second;
+
+        std::swap(m_data[f_row][f_col], m_data[s_row][s_col]);
+//        emit dataChanged(items_to_swap[FIRST], items_to_swap[SECOND]);
+        emit dataChanged(index(f_row, f_col), index(s_row, s_col));
+
+        return true;
+    }
 }
+
 
