@@ -12,26 +12,33 @@ Window {
 
     TableView {
         anchors.fill: parent
-        columnSpacing: 1
-        rowSpacing: 1
         columnWidthProvider: function (column) { return root.width / 4 }
         rowHeightProvider: function (row) { return root.height / 4 }
         interactive: false
+
 
         model: Board {
             id: boardModel
         }
 
         delegate: Rectangle {
-            color: display === "16" ? "transparent" : "grey"
-
-            Text {
-                text: display === "16" ? "" : display
+            Rectangle {
+                width: parent.width * 0.95
+                height: parent.height * 0.95
+                radius: 5
                 anchors.centerIn: parent
-            }
-            MouseArea {
-                anchors.fill: parent
-                onClicked: boardModel.moveTile(boardModel.index(row, column))
+                color: display === "16" ? "transparent" : "grey"
+
+                Text {
+                    text: display === "16" ? "" : display
+                    font.pointSize: 40
+                    color: "gainsboro"
+                    anchors.centerIn: parent
+                }
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: boardModel.moveTile(boardModel.index(row, column))
+                }
             }
         }
     }

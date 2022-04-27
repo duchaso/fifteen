@@ -14,7 +14,6 @@ Board::Board()
         m_data.append(tmp);
     }
 
-    std::swap(m_data[3][3], m_data[2][2]);
 }
 
 int Board::rowCount(const QModelIndex &) const
