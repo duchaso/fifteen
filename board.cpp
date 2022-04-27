@@ -1,9 +1,8 @@
 #include "board.h"
 
-
 Board::Board()
 {
-    auto cnt{0};
+    auto cnt{1};
     for(auto i = 0; i < BOARD_HEIGHT; ++i)
     {
         QVector<Tile> tmp;
@@ -14,6 +13,8 @@ Board::Board()
         }
         m_data.append(tmp);
     }
+
+    std::swap(m_data[3][3], m_data[2][2]);
 }
 
 int Board::rowCount(const QModelIndex &) const
@@ -28,19 +29,10 @@ int Board::columnCount(const QModelIndex &) const
 
 QVariant Board::data(const QModelIndex &index, int role) const
 {
-    switch(role) {
-        case Qt::DisplayRole: {
-            if(m_data[index.row()][index.column()].data() == 0)
-                return " ";
-            else
-                return QString::number(m_data[index.row()][index.column()].data());
-        }
-        case Qt::BackgroundRole: {
-            if(m_data[index.row()][index.column()].data() == 0)
-                return QBrush(Qt::white);
-            else
-                return QBrush(Qt::gray);
-        }
+    switch(role)
+    {
+        case Qt::DisplayRole:
+            return QString::number(m_data[index.row()][index.column()].data());
         default:
             break;
     }
@@ -49,45 +41,40 @@ QVariant Board::data(const QModelIndex &index, int role) const
 
 QHash<int, QByteArray> Board::roleNames() const
 {
-    return {{Qt::DisplayRole, "display"}, {Qt::BackgroundRole, "bg"}};
+    return {{Qt::DisplayRole, "display"}};
 }
 
-Qt::ItemFlags Board::flags(const QModelIndex &index) const
+void Board::moveTile(const QModelIndex& index)
 {
-    if(index.isValid())
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
-    else
-        return Qt::ItemIsDropEnabled;
-}
+    QPoint index_tile{index.row(), index.column()};
+    QPoint empty_tile{};
 
-void Board::add_item_to_swapping(const int row, const int col) {
-    items_to_swap.append(Coord(row, col));
-    if(items_to_swap.length() == 2)
+    if(isMovable(index, empty_tile))
     {
-        swapping();
-        items_to_swap.clear();
-    }
-}
-
-bool Board::swapping()
-{
-    if(items_to_swap[FIRST] == items_to_swap[SECOND])
-    {
-        qDebug() << "Can't move. Items are the same.";
-        return false;
+        std::swap( m_data[empty_tile.x()][empty_tile.y()],
+                m_data[index_tile.x()][index_tile.y()]
+                );
+        emit dataChanged(this->index(empty_tile.x(), empty_tile.y()), this->index(empty_tile.x(), empty_tile.y()));
+        emit dataChanged(index, index);
     } else {
-        auto f_row = items_to_swap[FIRST].first;
-        auto f_col = items_to_swap[FIRST].second;
-
-        auto s_row = items_to_swap[SECOND].first;
-        auto s_col = items_to_swap[SECOND].second;
-
-        std::swap(m_data[f_row][f_col], m_data[s_row][s_col]);
-//        emit dataChanged(items_to_swap[FIRST], items_to_swap[SECOND]);
-        emit dataChanged(index(f_row, f_col), index(s_row, s_col));
-
-        return true;
+        qDebug() << "can't move";
     }
 }
 
+bool Board::isMovable(const QModelIndex& index, QPoint& to_swap)
+{
+    using Directions = QVector<QPoint>;
+
+    static const Directions directions = {{-1,0}, {0,1}, {1,0}, {0,-1}};
+
+    QPoint current(index.row(), index.column());
+
+    for(auto& direction : directions)
+    {
+        to_swap = current+direction;
+        if(to_swap.x() < 0 || to_swap.x() > 3 || to_swap.y() < 0 || to_swap.y() > 3) continue;
+        if(m_data[to_swap.x()][to_swap.y()].data() == 16) return true;
+    }
+    return false;
+}
 

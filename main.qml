@@ -3,7 +3,7 @@ import QtQuick.Window 2.15
 import board 1.0
 
 Window {
-    id: win
+    id: root
 
     width: 640
     height: 480
@@ -14,8 +14,8 @@ Window {
         anchors.fill: parent
         columnSpacing: 1
         rowSpacing: 1
-        columnWidthProvider: function (column) { return win.width / 4 }
-        rowHeightProvider: function (row) { return win.height / 4 }
+        columnWidthProvider: function (column) { return root.width / 4 }
+        rowHeightProvider: function (row) { return root.height / 4 }
         interactive: false
 
         model: Board {
@@ -23,15 +23,15 @@ Window {
         }
 
         delegate: Rectangle {
-            color: bg
+            color: display === "16" ? "transparent" : "grey"
 
             Text {
-                text: display
+                text: display === "16" ? "" : display
                 anchors.centerIn: parent
             }
             MouseArea {
                 anchors.fill: parent
-                onClicked: {boardModel.add_item_to_swapping(row, column)}
+                onClicked: boardModel.moveTile(boardModel.index(row, column))
             }
         }
     }
