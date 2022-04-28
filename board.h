@@ -7,7 +7,11 @@
 #include <QBrush>
 #include <QColor>
 #include <QDebug>
+#include <QtMath>
+
 #include <utility>
+#include <algorithm>
+#include <random>
 
 #include "tile.h"
 
@@ -33,7 +37,9 @@ public:
     Q_INVOKABLE void moveTile(const QModelIndex& index);
 
 private:
-    bool isMovable(const QModelIndex& index, QPoint& to_swap);
+    bool is_movable(const QModelIndex& index, QPoint& to_swap);
+    void generate_board(int size);
+    bool is_solvable(QVector<int>& list);
 
 private:
     TileMatrix m_data;

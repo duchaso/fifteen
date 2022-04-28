@@ -16,7 +16,6 @@ Window {
         rowHeightProvider: function (row) { return root.height / 4 }
         interactive: false
 
-
         model: Board {
             id: boardModel
         }
