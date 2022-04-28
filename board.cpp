@@ -2,7 +2,7 @@
 
 Board::Board()
 {
-    generate_board(4);
+    generate_board(3);
 }
 
 int Board::rowCount(const QModelIndex &) const
@@ -32,7 +32,7 @@ QHash<int, QByteArray> Board::roleNames() const
     return {{Qt::DisplayRole, "display"}};
 }
 
-void Board::moveTile(const QModelIndex& index)
+bool Board::moveTile(const QModelIndex& index)
 {
     QPoint index_tile{index.row(), index.column()};
     QPoint empty_tile{};
@@ -44,8 +44,10 @@ void Board::moveTile(const QModelIndex& index)
                 );
         emit dataChanged(this->index(empty_tile.x(), empty_tile.y()), this->index(empty_tile.x(), empty_tile.y()));
         emit dataChanged(index, index);
+        return true;
     } else {
         qDebug() << "can't move";
+        return false;
     }
 }
 
@@ -62,9 +64,10 @@ bool Board::win()
     return true;
 }
 
-void Board::reset()
+void Board::reset(int board_size)
 {
-    generate_board(4);
+    m_board_size = board_size;
+    generate_board(m_board_size);
 }
 
 bool Board::is_movable(const QModelIndex& index, QPoint& to_swap)
@@ -78,8 +81,8 @@ bool Board::is_movable(const QModelIndex& index, QPoint& to_swap)
     for(auto& direction : directions)
     {
         to_swap = current+direction;
-        if(to_swap.x() < 0 || to_swap.x() > 3 || to_swap.y() < 0 || to_swap.y() > 3) continue;
-        if(m_data[to_swap.x()][to_swap.y()].data() == 16) return true;
+        if(to_swap.x() < 0 || to_swap.x() > m_data.size()-1 || to_swap.y() < 0 || to_swap.y() > m_data.size()-1) continue;
+        if(m_data[to_swap.x()][to_swap.y()].data() == m_data.size()*m_data.size()) return true;
     }
     return false;
 }
@@ -87,7 +90,12 @@ bool Board::is_movable(const QModelIndex& index, QPoint& to_swap)
 void Board::generate_board(int size)
 { 
     if(!m_data.isEmpty())
+    {
+        for(auto& row : m_data)
+            row.clear();
         m_data.clear();
+    }
+//        m_data.clear();
 
     QVector<int> v;
     for(int i = 1; i <= size*size; ++i)
@@ -110,6 +118,7 @@ void Board::generate_board(int size)
         }
         m_data.append(tmp);
     }
+    emit dataChanged(this->index(0,0), this->index(m_board_size-1, m_board_size-1));
 }
 
 bool Board::is_solvable(QVector<int>& list)

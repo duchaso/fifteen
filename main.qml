@@ -1,62 +1,63 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
 import QtQuick.Dialogs 1.1
+import QtQuick.Layouts 1.15
+import QtQuick.Controls 2.15
 import board 1.0
 
 Window {
     id: root
 
-    width: 640
-    height: 480
+    width: 800
+    height: 600
     visible: true
     title: qsTr("Fifteen")
 
-    TableView {
-        anchors.fill: parent
-        columnWidthProvider: function (column) { return root.width / 4 }
-        rowHeightProvider: function (row) { return root.height / 4 }
-        interactive: false
+    RowLayout {
+        TableView {
+            id: boardView
 
-        model: Board {
-            id: boardModel
-            property bool blocked: false
+            property string emptyTile: boardModel.rowCount()*boardModel.columnCount()
+            Layout.preferredWidth: 600
+            Layout.preferredHeight: 600
+            columnWidthProvider: function (column) { return (root.width-200) / boardModel.columnCount()}
+            rowHeightProvider: function (row) { return root.height / boardModel.rowCount() }
+            interactive: false
+
+            model: Board {
+                id: boardModel
+                property bool blocked: false
+            }
+
+            delegate: TileDelegate {}
         }
 
-        delegate: Rectangle {
-            Rectangle {
-                width: parent.width * 0.95
-                height: parent.height * 0.95
-                radius: 5
-                anchors.centerIn: parent
-                color: display === "16" ? "transparent" : "grey"
 
-                Text {
-                    id: textTile
+        ColumnLayout {
+            id: sideBar
 
-                    text: display === "16" ? "" : display
-                    font.pointSize: 40
-                    color: "gainsboro"
-                    anchors.centerIn: parent
-                }
-                MouseArea {
-                    anchors.fill: parent
-                    onClicked: {
-                        if(boardModel.blocked) {
-                        } else {
-                            boardModel.moveTile(boardModel.index(row, column))
-                            boardModel.win() ? winDialog.open() : false
-                        }
-                    }
-                }
+            Layout.preferredWidth: 200
+            Layout.preferredHeight: 600
+            Layout.alignment: Qt.AlignRight
+
+            Stopwatch {
+                id: stopwatch
+            }
+
+            StepCounter {
+                id: stepCounter
+            }
+
+            BoardSizeSelector {
+                id: boardSizeSelector
             }
         }
     }
-
     MessageDialog {
         id: winDialog
 
         title: "You won!"
-        text: "Congrats!"
+        text: boardModel.rowCount()
         standardButtons: StandardButton.Ok | StandardButton.Reset
 
         onAccepted: boardModel.blocked = true
@@ -64,3 +65,4 @@ Window {
 
     }
 }
+

@@ -30,9 +30,9 @@ public:
     QVariant data(const QModelIndex &index, int role) const override;
     QHash<int, QByteArray> roleNames() const override;
 
-    Q_INVOKABLE void moveTile(const QModelIndex& index);
+    Q_INVOKABLE bool moveTile(const QModelIndex& index);
     Q_INVOKABLE bool win();
-    Q_INVOKABLE void reset();
+    Q_INVOKABLE void reset(int boad_size = 4);
 
 private:
     bool is_movable(const QModelIndex& index, QPoint& to_swap);
@@ -41,6 +41,7 @@ private:
 
 private:
     TileMatrix m_data;
+    int m_board_size{4};
 };
 
 #endif // BOARD_H
