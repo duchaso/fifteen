@@ -49,6 +49,24 @@ void Board::moveTile(const QModelIndex& index)
     }
 }
 
+bool Board::win()
+{
+    int prev = m_data.first().first().data()-1;
+    for(auto& row : m_data)
+        for(auto& current_item : row)
+        {
+            if(current_item.data() - prev != 1)	return false;
+            prev = current_item.data();
+        }
+
+    return true;
+}
+
+void Board::reset()
+{
+    generate_board(4);
+}
+
 bool Board::is_movable(const QModelIndex& index, QPoint& to_swap)
 {
     using Directions = QVector<QPoint>;
@@ -67,7 +85,10 @@ bool Board::is_movable(const QModelIndex& index, QPoint& to_swap)
 }
 
 void Board::generate_board(int size)
-{
+{ 
+    if(!m_data.isEmpty())
+        m_data.clear();
+
     QVector<int> v;
     for(int i = 1; i <= size*size; ++i)
         v.append(i);

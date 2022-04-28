@@ -1,5 +1,6 @@
 import QtQuick 2.15
 import QtQuick.Window 2.15
+import QtQuick.Dialogs 1.1
 import board 1.0
 
 Window {
@@ -18,6 +19,7 @@ Window {
 
         model: Board {
             id: boardModel
+            property bool blocked: false
         }
 
         delegate: Rectangle {
@@ -29,6 +31,8 @@ Window {
                 color: display === "16" ? "transparent" : "grey"
 
                 Text {
+                    id: textTile
+
                     text: display === "16" ? "" : display
                     font.pointSize: 40
                     color: "gainsboro"
@@ -36,9 +40,27 @@ Window {
                 }
                 MouseArea {
                     anchors.fill: parent
-                    onClicked: boardModel.moveTile(boardModel.index(row, column))
+                    onClicked: {
+                        if(boardModel.blocked) {
+                        } else {
+                            boardModel.moveTile(boardModel.index(row, column))
+                            boardModel.win() ? winDialog.open() : false
+                        }
+                    }
                 }
             }
         }
+    }
+
+    MessageDialog {
+        id: winDialog
+
+        title: "You won!"
+        text: "Congrats!"
+        standardButtons: StandardButton.Ok | StandardButton.Reset
+
+        onAccepted: boardModel.blocked = true
+        onReset: boardModel.reset()
+
     }
 }

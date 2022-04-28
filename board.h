@@ -15,10 +15,6 @@
 
 #include "tile.h"
 
-#define BOARD_HEIGHT 4
-#define BOARD_WIDTH  4
-
-
 class Board : public QAbstractTableModel
 {
     Q_OBJECT
@@ -35,11 +31,13 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE void moveTile(const QModelIndex& index);
+    Q_INVOKABLE bool win();
+    Q_INVOKABLE void reset();
 
 private:
     bool is_movable(const QModelIndex& index, QPoint& to_swap);
-    void generate_board(int size);
     bool is_solvable(QVector<int>& list);
+    void generate_board(int size);
 
 private:
     TileMatrix m_data;
