@@ -2,8 +2,6 @@
     <qresource prefix="/">
         <file>main.qml</file>
         <file>TileDelegate.qml</file>
-        <file>BoardSizeSelector.qml</file>
-        <file>StepCounter.qml</file>
         <file>Stopwatch.qml</file>
     </qresource>
 </RCC>

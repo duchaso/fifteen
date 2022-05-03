@@ -15,17 +15,14 @@ Item {
 
             text: display === boardView.emptyTile ? "" : display
             font.pointSize: 40
-            color: "gainsboro"
+            color: "white"
             anchors.centerIn: parent
         }
         MouseArea {
             anchors.fill: parent
             onClicked: {
-                if(boardModel.blocked) {
-
-                } else {
-                    boardModel.moveTile(boardModel.index(row, column)) ? stepCounter.counter +=1 : false
-                    boardModel.win() ? winDialog.open() : false
+                if(!boardModel.blocked) {
+                    boardModel.moveTile(boardModel.index(row, column)) ? winDialog.open() : false;
                 }
             }
         }
