@@ -1,30 +1,21 @@
 import QtQuick 2.0
 
-Item {
-    Rectangle {
-        id: tile
+Rectangle {
+    id: tile
 
-        width: parent.width * 0.95
-        height: parent.height * 0.95
-        radius: 5
+    property string empty: ""
+    radius: 5
+    color: display === empty ? "transparent" : "grey"
+//    width: parent.width * 0.95
+//    height: parent.height * 0.95
+//    anchors.centerIn: parent
+
+    Text {
+        id: textTile
+
+        text: display === empty ? "" : display
+        font.pointSize: 40
+        color: "white"
         anchors.centerIn: parent
-        color: display === boardView.emptyTile ? "transparent" : "grey"
-
-        Text {
-            id: textTile
-
-            text: display === boardView.emptyTile ? "" : display
-            font.pointSize: 40
-            color: "white"
-            anchors.centerIn: parent
-        }
-        MouseArea {
-            anchors.fill: parent
-            onClicked: {
-                if(!boardModel.blocked) {
-                    boardModel.moveTile(boardModel.index(row, column)) ? winDialog.open() : false;
-                }
-            }
-        }
     }
 }

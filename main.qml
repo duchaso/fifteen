@@ -17,19 +17,34 @@ Window {
         TableView {
             id: boardView
 
-            property string emptyTile: boardModel.rowCount()*boardModel.columnCount()
+            rowSpacing: 5
+            columnSpacing: 5
             Layout.preferredWidth: 600
             Layout.preferredHeight: 600
-            columnWidthProvider: function (column) { return (root.width-200) / boardModel.columnCount()}
+            columnWidthProvider: function (column) { return (root.width - 200) / boardModel.columnCount()}
             rowHeightProvider: function (row) { return root.height / boardModel.rowCount() }
             interactive: false
 
             model: Board {
                 id: boardModel
+
                 property bool blocked: false
+                property string emptyTile: boardModel.rowCount() * boardModel.columnCount()
             }
 
-            delegate: TileDelegate {}
+            delegate: TileDelegate {
+
+                empty: boardModel.emptyTile
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        if(!boardModel.blocked) {
+                            boardModel.moveTile(boardModel.index(row, column)) ? winDialog.open() : false;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -69,17 +84,17 @@ Window {
 
                 textRole: "name"
                 valueRole: "value"
-                currentIndex: indexOfValue(boardModel.boardDimension)
+                currentIndex: indexOfValue(boardModel.dimension)
 
-                onCurrentValueChanged: boardModel.boardDimension = currentValue
+                onCurrentValueChanged: boardModel.dimension = currentValue
 
-                Component.onCompleted: currentIndex = indexOfValue(boardModel.boardDimension)
+                Component.onCompleted: currentIndex = indexOfValue(boardModel.dimension)
 
                 onActivated: {
                     stopwatch.reset();
-                    boardView.columnWidthProvider = function (column) { return (root.width-200) / boardModel.columnCount()};
+                    boardView.columnWidthProvider = function (column) { return (root.width - 200) / boardModel.columnCount()};
                     boardView.rowHeightProvider = function (row) { return root.height / boardModel.rowCount() };
-                    boardView.emptyTile = boardModel.rowCount()*boardModel.columnCount();
+                    boardModel.emptyTile = boardModel.rowCount() * boardModel.columnCount();
                 }
             }
         }

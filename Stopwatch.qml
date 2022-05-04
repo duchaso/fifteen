@@ -5,9 +5,12 @@ Item {
     id: root
 
     Timer {
+        id: timer
+
         interval: 1000
         running: true
         repeat: true
+
         onTriggered: {
             time.sec = time.sec + 1;
             if(time.sec === 60) {
@@ -23,6 +26,7 @@ Item {
     }
     Text {
         id: timeText
+
         text: "0:0:0"
         color: "black"
         font.pointSize: 25

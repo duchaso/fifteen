@@ -19,8 +19,8 @@ class Board : public QAbstractTableModel
 {
     Q_OBJECT
     QML_ELEMENT
-    Q_PROPERTY(int stepCounter READ stepCounter WRITE setStepcounter NOTIFY stepcounterChanged)
-    Q_PROPERTY(int boardDimension READ boardDimension WRITE setBoardDimension NOTIFY boardDimensionChanged)
+    Q_PROPERTY(int stepCounter READ stepCounter WRITE setStepCounter NOTIFY stepCounterChanged)
+    Q_PROPERTY(int dimension READ dimension WRITE setDimension NOTIFY dimensionChanged)
 
     using TileMatrix = QVector<QVector<Tile>>;
 
@@ -33,24 +33,24 @@ public:
     QHash<int, QByteArray> roleNames() const override;
 
     Q_INVOKABLE bool moveTile(const QModelIndex& index);
-    Q_INVOKABLE bool win();
-    Q_INVOKABLE void reset(int boad_size = 4);
 
     int stepCounter();
-    int boardDimension();
+    int dimension();
 
 public slots:
-    void setStepcounter(int value);
-    void setBoardDimension(int value);
+    void setStepCounter(int value);
+    void setDimension(int value);
+    void reset();
 
 signals:
-    void stepcounterChanged();
-    void boardDimensionChanged();
+    void stepCounterChanged();
+    void dimensionChanged();
 
 private:
     bool isMovable(const QModelIndex& index, QPoint& to_swap);
     bool isSolvable(QVector<int>& list);
-    void generateBoard(int size);
+    bool isWin();
+    void generateBoard();
 
 private:
     TileMatrix m_data;

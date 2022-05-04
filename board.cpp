@@ -1,9 +1,8 @@
 #include "board.h"
 
-Board::Board()
-    : m_boardDimension(3), m_stepCounter(0)
+Board::Board() : m_boardDimension(3), m_stepCounter(0)
 {
-    generateBoard(m_boardDimension);
+    generateBoard();
 }
 
 int Board::rowCount(const QModelIndex &) const
@@ -40,17 +39,16 @@ bool Board::moveTile(const QModelIndex& index)
 
     if(isMovable(index, empty_tile))
     {
-        std::swap( m_data[empty_tile.x()][empty_tile.y()],
-                m_data[index_tile.x()][index_tile.y()]
-                );
-        m_stepCounter += 1;
+        std::swap(m_data[empty_tile.x()][empty_tile.y()],
+                  m_data[index_tile.x()][index_tile.y()]);
+        setStepCounter(m_stepCounter+1);
         emit dataChanged(this->index(empty_tile.x(), empty_tile.y()), this->index(empty_tile.x(), empty_tile.y()));
         emit dataChanged(index, index);
     }
-    return win();
+    return isWin();
 }
 
-bool Board::win()
+bool Board::isWin()
 {
     int prev = m_data.first().first().data() - 1;
     for(auto& row : m_data)
@@ -67,10 +65,10 @@ bool Board::win()
     return true;
 }
 
-void Board::reset(int dimension)
+void Board::reset()
 {
-    m_boardDimension = dimension;
-    generateBoard(m_boardDimension);
+    generateBoard();
+    setStepCounter(0);
 }
 
 int Board::stepCounter()
@@ -78,21 +76,28 @@ int Board::stepCounter()
     return m_stepCounter;
 }
 
-int Board::boardDimension()
+int Board::dimension()
 {
     return m_boardDimension;
 }
 
-void Board::setStepcounter(int value)
+void Board::setStepCounter(int value)
 {
-    m_stepCounter = value;
+    if(value != m_stepCounter)
+    {
+        m_stepCounter = value;
+        emit stepCounterChanged();
+
+    }
 }
 
-void Board::setBoardDimension(int value)
+void Board::setDimension(int value)
 {
-    m_boardDimension = value;
-    m_stepCounter = 0;
-    reset(value);
+    if(value != m_boardDimension)
+    {
+        m_boardDimension = value;
+    }
+    reset();
 }
 
 bool Board::isMovable(const QModelIndex& index, QPoint& to_swap)
@@ -118,41 +123,46 @@ bool Board::isMovable(const QModelIndex& index, QPoint& to_swap)
     return false;
 }
 
-void Board::generateBoard(int size)
+void Board::generateBoard()
 { 
+    beginResetModel();
     if(!m_data.isEmpty())
     {
         for(auto& row : m_data)
+        {
             row.clear();
+        }
         m_data.clear();
     }
     QVector<int> v;
-    for(int i = 1; i <= size * size; ++i)
+    for(int i = 1; i <= m_boardDimension * m_boardDimension; ++i)
+    {
         v.append(i);
+    }
 
     std::random_device rd;
     auto rng = std::default_random_engine{rd()};
-    std::shuffle(std::begin(v), std::end(v) - 1, rng);
-    while(!isSolvable(v))
+    do {
         std::shuffle(std::begin(v), std::end(v) - 1, rng);
+    } while(!isSolvable(v));
 
-    int cnt{0};
-    for(auto i = 0; i < size; ++i)
+    int cnt = 0;
+    for(auto i = 0; i < m_boardDimension; ++i)
     {
         QVector<Tile> tmp;
-        for(auto j = 0; j < size; ++j)
+        for(auto j = 0; j < m_boardDimension; ++j)
         {
             tmp.append(v[cnt]);
             ++cnt;
         }
         m_data.append(tmp);
     }
-    emit dataChanged(this->index(0,0), this->index(m_boardDimension - 1, m_boardDimension - 1));
+    endResetModel();
 }
 
 bool Board::isSolvable(QVector<int>& list)
 {
-    int cnt{0};
+    int cnt = 0;
 
     for(int i = 0; i < list.size() - 1; ++i)
     {
