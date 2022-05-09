@@ -1,5 +1,10 @@
 #include "board.h"
 
+#include <QPoint>
+
+#include <utility>
+#include <random>
+
 Board::Board() : m_boardDimension(3), m_stepCounter(0)
 {
     generateBoard();
@@ -55,7 +60,8 @@ bool Board::isWin()
     {
         for(auto& current_item : row)
         {
-            if(current_item.data() - prev != 1){
+            if(current_item.data() - prev != 1)
+            {
                 return false;
             }
             prev = current_item.data();
@@ -142,9 +148,11 @@ void Board::generateBoard()
 
     std::random_device rd;
     auto rng = std::default_random_engine{rd()};
-    do {
-        std::shuffle(std::begin(v), std::end(v) - 1, rng);
-    } while(!isSolvable(v));
+    std::shuffle(std::begin(v), std::end(v) - 1, rng);
+    if(!isSolvable(v))
+    {
+        std::swap(v[0], v[1]);
+    }
 
     int cnt = 0;
     for(auto i = 0; i < m_boardDimension; ++i)

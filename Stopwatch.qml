@@ -4,26 +4,7 @@ import QtQuick.Layouts 1.15
 Item {
     id: root
 
-    Timer {
-        id: timer
 
-        interval: 1000
-        running: true
-        repeat: true
-
-        onTriggered: {
-            time.sec = time.sec + 1;
-            if(time.sec === 60) {
-                time.min = time.min + 1;
-                time.sec = 0;
-                if(time.min === 60) {
-                    time.hours = time.hours + 1;
-                    time.min = 0;
-                }
-            }
-            timeText.text = time.hours + ":" + time.min + ":" + time.sec;
-        }
-    }
     Text {
         id: timeText
 
@@ -45,5 +26,24 @@ Item {
         time.min = 0;
         time.hours = 0;
         timeText.text = "0:0:0";
+    }
+
+    Timer {
+        id: timer
+
+        property int totalTime: 0
+        interval: 1000
+        running: true
+        repeat: true
+
+        onTriggered: {
+            timer.totalTime += 1;
+
+            time.hours = totalTime / 3600;
+            time.min = (totalTime / 60) % 60;
+            time.sec = totalTime % 60;
+
+            timeText.text = time.hours + ":" + time.min + ":" + time.sec;
+        }
     }
 }

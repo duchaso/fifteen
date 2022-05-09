@@ -4,15 +4,6 @@
 #include <qqml.h>
 #include <QAbstractTableModel>
 
-#include <QBrush>
-#include <QColor>
-#include <QDebug>
-#include <QtMath>
-
-#include <utility>
-#include <algorithm>
-#include <random>
-
 #include "tile.h"
 
 class Board : public QAbstractTableModel

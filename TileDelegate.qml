@@ -6,9 +6,6 @@ Rectangle {
     property string empty: ""
     radius: 5
     color: display === empty ? "transparent" : "grey"
-//    width: parent.width * 0.95
-//    height: parent.height * 0.95
-//    anchors.centerIn: parent
 
     Text {
         id: textTile

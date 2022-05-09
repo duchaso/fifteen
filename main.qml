@@ -33,8 +33,8 @@ Window {
             }
 
             delegate: TileDelegate {
-
                 empty: boardModel.emptyTile
+
                 MouseArea {
                     anchors.fill: parent
 
