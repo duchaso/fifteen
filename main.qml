@@ -41,6 +41,7 @@ Window {
                     onClicked: {
                         if(!boardModel.blocked) {
                             boardModel.moveTile(boardModel.index(row, column)) ? winDialog.open() : false;
+                            stopwatch.started = true;
                         }
                     }
                 }

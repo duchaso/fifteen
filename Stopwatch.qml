@@ -4,6 +4,7 @@ import QtQuick.Layouts 1.15
 Item {
     id: root
 
+    property alias started: timer.running
 
     Text {
         id: timeText
@@ -22,9 +23,8 @@ Item {
     }
 
     function reset() {
-        time.sec = 0;
-        time.min = 0;
-        time.hours = 0;
+        timer.totalTime = 0;
+        started = false;
         timeText.text = "0:0:0";
     }
 
@@ -33,7 +33,7 @@ Item {
 
         property int totalTime: 0
         interval: 1000
-        running: true
+        running: false
         repeat: true
 
         onTriggered: {
