@@ -62,13 +62,13 @@ bool Board::isWin()
         {
             if(current_item.data() - prev != 1)
             {
-                return false;
+                break;
             }
             prev = current_item.data();
         }
     }
 
-    return true;
+    return m_data.last()[m_boardDimension-2].data() == prev ? true : false;
 }
 
 void Board::reset()
@@ -121,7 +121,7 @@ bool Board::isMovable(const QModelIndex& index, QPoint& to_swap)
         {
             continue;
         }
-        if(m_data[to_swap.x()][to_swap.y()].data() == m_data.size() * m_data.size())
+        if(m_data[to_swap.x()][to_swap.y()].data() == 0)
         {
             return true;
         }
@@ -153,6 +153,7 @@ void Board::generateBoard()
     {
         std::swap(v[0], v[1]);
     }
+    v.last() = 0;
 
     int cnt = 0;
     for(auto i = 0; i < m_boardDimension; ++i)

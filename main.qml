@@ -29,11 +29,9 @@ Window {
                 id: boardModel
 
                 property bool blocked: false
-                property string emptyTile: boardModel.rowCount() * boardModel.columnCount()
             }
 
             delegate: TileDelegate {
-                empty: boardModel.emptyTile
 
                 MouseArea {
                     anchors.fill: parent
@@ -95,7 +93,6 @@ Window {
                     stopwatch.reset();
                     boardView.columnWidthProvider = function (column) { return (root.width - 200) / boardModel.columnCount()};
                     boardView.rowHeightProvider = function (row) { return root.height / boardModel.rowCount() };
-                    boardModel.emptyTile = boardModel.rowCount() * boardModel.columnCount();
                 }
             }
         }
